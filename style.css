@@ -1,0 +1,95 @@
+#map {
+	position:absolute;
+	left:0;top:0;bottom:0;right:0;
+}
+
+.label {
+	position:absolute;
+	display:none;
+	pointer-events:none;
+	/*border:1px solid black;
+	border-width:1px 0 0 1px;*/
+	white-space: nowrap; color:white;
+}
+.label span,.label small{
+/*	border:1px solid red;*/
+	font-family:menomonia,serif;
+	position:relative;
+	display:block;
+	left:-50%;
+	text-shadow:-1px -1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,1px 1px 0 #000;
+	text-align:center;
+}
+.label span {
+	top:-.5em;
+}
+.label small{
+	top:-1em;
+	color:#fff;
+	z-index:-2;
+}
+.hide-small small {
+	display:none;
+}
+.label .icon{
+	cursor:pointer;
+	pointer-events:auto;
+	background-repeat:no-repeat;
+}
+.label .icon:hover{
+	margin:-3px;
+}
+.label .icon:hover,.event-area:hover{
+	border-width:3px;
+	border-style:dashed;
+}
+.label .landmark {
+	width:23px;height:23px;
+	left:-11px;top:-11px;
+	background-image:url(img/icon-landmark.png);
+}
+.label .skill {
+	width:19px;height:23px;
+	left:-9px;top:-11px;
+	background-image:url(img/icon-skill.png);
+}
+.label .tasks {
+	width:23px;height:19px;
+	left:-11px;top:-9px;
+	background-image:url(img/icon-tasks.png);
+}
+.label .vista {
+	width:23px;height:21px;
+	left:-11px;top:-10px;
+	background-image:url(img/icon-vista.png);
+}
+.label .unlock {
+	width:23px;height:21px;
+	left:-11px;top:-10px;
+	background-image:url(img/icon-unlock.png);
+}
+.label .waypoint {
+	width:23px;height:22px;
+	left:-11px;top:-11px;
+	background-image:url(img/icon-waypoint.png);
+}
+.label .jp {
+	width:20px;height:20px;
+	left:-10px;top:-10px;
+	background-image:url(img/icon-jp.png);
+}
+.event-poly-center {
+	cursor:pointer;
+	position:absolute;
+	width:20px;height:20px;
+	left:-10px;top:-10px;
+	background-image:url(img/icon-event.png);
+}
+.event-area {
+	color:cyan;
+	position:absolute;
+	z-index:-1;
+	cursor:pointer;
+	border:3px solid #38b;
+	box-shadow:0 0 10px #000;
+}
