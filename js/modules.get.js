@@ -19,7 +19,7 @@ AppModules.Get = function (self) {
       return "https://tiles.guildwars2.com/" + mapId + "/1/" + zoom + "/" + coords.x + "/" + coords.y + ".jpg";
     },
     mapInd: function (force) {
-      if (force || !self.Player.map) {
+      if (force || !self.Player.linker().mapInd) {
         var c = self.Geo.ll2p(self.map.getCenter()),
           itm;
         for (var scanning in self.Maps.raw) {
@@ -31,7 +31,7 @@ AppModules.Get = function (self) {
           }
         }
         itm = null;
-      } else return self.Player.map;
+      } else return self.Player.linker().mapInd;
       return false;
     },
     chatCode: function (type, id) {
