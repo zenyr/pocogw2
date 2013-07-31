@@ -68,7 +68,7 @@ AppModules.Fetch = function (self) {
       });
     },
    linker : function(){
-      return $.getJSON('https://localhost/gw2.json');
+      return new $.getJSON('http://localhost:8428/gw2.json?'+Math.random());
     },
    servers: function () {
       return $.Deferred(function ($d) {
