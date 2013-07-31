@@ -3,51 +3,72 @@ AppModules.Player = function (self) {
   var poll = function(){
     var interval = 3000;
     self.Fetch.linker().done(function(aData){
-      interval = 100;
-      data = aData;
+      interval = 200;
+      for(var a in data) delete data[a];
+      $.extend(data,aData);      
+      data.mapInd = data.map;
+      data.pos = self.Geo.pos2ll({
+            x: data.pos[0],
+            y: data.pos[2]
+          });
+      try{
+       markerSet(data)
+      }catch(e){
+        interval = 3000;
+      }
     }).always(function(){
       setTimeout(poll,interval);
     });
   };
+  var marker;
   var markerClear = function(){};
-  var markerSet = function(oXY){
-  
+  var markerSet = function(o){
+    if(!marker) {      
+      marker = new _marker($.extend({},o,{map:self.map}));
+    } else {
+      delete o.map;
+      marker.setValues(o);
+      marker.draw();
+      if(self.Options.optFollow)
+        self.map.panTo(o.pos);
+    }
   };
+
 var _marker = function (opt_options) {
   var that = this;
   this.setValues(opt_options);
   var span = document.createElement('span');
-  var crot = this.crot = document.createElement('img');
-  var prot = this.prot = document.createElement('img');
-  var div = this.div = document.createElement('div');
+  var crot = this._crot = document.createElement('img');
+  var prot = this._prot = document.createElement('img');
+  var div = this.div = $(document.createElement('div'));
   this.v = false;
-  crot.src = 'images/icon-crot.png';
+  crot.src = 'img/icon-crot.png';
   crot.className = 'crot';
-  prot.src = 'images/icon-prot.png';
+  prot.src = 'img/icon-prot.png';
   prot.className = 'prot';
   this.input = {};
   this.deg = {};
   span.appendChild(crot);
   span.appendChild(prot);
-  div.appendChild(span);
-  div.className = 'marker';
-  div.style.cssText = 'position: absolute; display: none;color:red;';
+  div.append(span).addClass('marker');
 };
 _marker.prototype = new google.maps.OverlayView;
 _marker.prototype.onAdd = function () {
   var pane = this.getPanes().overlayLayer;
-  pane.appendChild(this.div_);
+  this.div.appendTo(pane);
   // Ensures the label is redrawn if the text or position is changed.
 };
 // Implement onRemove
 _marker.prototype.onRemove = function(){
-  this.div = this.crot = this.prot = this.input = this.deg = null;
+  this.div.remove();
+  this.div = this._crot = this._prot = this.input = this.deg = null;
 };
 // Implement draw
 _marker.prototype.draw = function () {
   var that = this;
   var projection = this.getProjection();
   var position = projection.fromLatLngToDivPixel(this.get('pos'));
+  if(!position) return;
   var div = this.div;
   var shouldVis = position.x * position.y != 0;
   var getDeg = function (type, target) {
@@ -61,24 +82,21 @@ _marker.prototype.draw = function () {
     that.deg[type] = lastDeg + diff;
   };
   if (this.v != shouldVis) {
-    div.style.display = (shouldVis ? 'block' : 'none');
+    div.css({display :shouldVis ? 'block' : 'none'});
     this.v = shouldVis;
   }
   if (shouldVis) {
-    div.style.left = position.x + 'px';
-    div.style.top = position.y + 'px';
+    div.css({left:position.x,top:position.y});
     getDeg('c', this.get('crot'));
     getDeg('p', this.get('prot'));
-    this.prot.style.transform = this.prot.style.webkitTransform = 'rotate(' + (-this.deg['p'] || 0) + 'deg)';
-    this.crot.style.transform = this.crot.style.webkitTransform = 'rotate(' + (-this.deg['c'] || 0) + 'deg)';
+    this._prot.style.transform = this._prot.style.webkitTransform = 'rotate(' + (-this.deg['p'] || 0) + 'deg)';
+    this._crot.style.transform = this._crot.style.webkitTransform = 'rotate(' + (-this.deg['c'] || 0) + 'deg)';
   }
 };
 
-
   //setTimeout(poll,1000);
   return {
-    server:data.server,
-    map:data.map,
-    pos:data.pos
+    linker:function(){return data},
+    poll:poll
   }
 };
