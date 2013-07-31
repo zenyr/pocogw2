@@ -2,7 +2,7 @@ AppModules.Draw = function (self) {
   return {
     eventMarkers: function (force, data, names) {
       if (!data) {
-        $.when(self.Fetch.zoneEvents(force, self.Player.server, self.Get.mapInd()), self.Fetch.eventNames()).done(function (dat1, dat2) {
+        $.when(self.Fetch.zoneEvents(force, self.Player.linker.server, self.Get.mapInd(1)), self.Fetch.eventNames()).done(function (dat1, dat2) {
           self.Draw.eventMarkers(force, dat1, dat2);
         });
       } else {
@@ -18,9 +18,9 @@ AppModules.Draw = function (self) {
               Inactive: 1,
               Warmup: 2,
               Fail: 1,
-              Active: 3,
+              Active: 4,
               Success: 1,
-              Preperation: 2
+              Preparation: 3
             }[status] - 1;
           if ( /*skip > 1 &&*/ event) {
             var ll = self.Geo.pos2ll(event.location.center, mapInd, 1);
@@ -43,7 +43,7 @@ AppModules.Draw = function (self) {
                 flags: event.flags,
                 status: skip,
                 label: event.name,
-                desc: event.flags.join(',') + '(' + status + ') ' + event.name,
+                desc: event.flags.join(',').replace('group_event','[Group]') + '(' + status + ') ' + event.name,
                 radius: radius
               });
               break;
