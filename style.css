@@ -119,3 +119,11 @@ top:-43px;
 	left:-14px;
 	top:-10px;
 }
+
+ul,li {
+	margin:0;
+	padding:0;
+}
+li {
+	list-style:none;
+}

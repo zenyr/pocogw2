@@ -38,12 +38,16 @@ AppModules.On = function (self) {
       console.log('Optchanged-', id, val);
       self.Options[id] = val;
     },
+    mapDragged : function(e){
+      self.Options.lastDrag = +new Date();
+    },
     init: function () {
       self.Draw.worldMarkers();
       self.Player.poll();
       setInterval(self.Draw.eventMarkers, 5000);
       google.maps.event.addListener(self.map, "center_changed", self.On.centerChanged);
       google.maps.event.addListener(app.map, "click", self.On.mapClick);
+      google.maps.event.addListener(app.map, "drag", self.On.mapDragged);
     }
   }
 };

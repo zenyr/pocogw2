@@ -1,6 +1,5 @@
 AppModules.Options = function (self) {
   var opt = {};
-
   var floatPnl = $('<div id="float" style="z-index:2;background:#fff;padding:2px;font-size:.5em;position:absolute;right:0;top:3em;"><p id="echo"></p></div>');
   var optPnl = $('<div />', {
     id: 'optPnl'

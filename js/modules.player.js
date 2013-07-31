@@ -29,7 +29,7 @@ AppModules.Player = function (self) {
       delete o.map;
       marker.setValues(o);
       marker.draw();
-      if(self.Options.optFollow)
+      if(self.Options.optFollow && (new Date() - self.Options.lastDrag>2000) )
         self.map.panTo(o.pos);
     }
   };
