@@ -34,6 +34,9 @@ AppModules.On = function (self) {
       var $e = $(e.target),
         id = $e.attr('id'),
         val = $e.is(':checked');
+      if($e.is('select')){
+        val = $e.find(':selected').val();
+      }
       if (!id) return console.log('Unknown Option.', e);
       console.log('Optchanged-', id, val);
       self.Options[id] = val;
@@ -44,6 +47,7 @@ AppModules.On = function (self) {
     init: function () {
       self.Draw.worldMarkers();
       self.Player.poll();
+      self.Options.init();
       setInterval(self.Draw.eventMarkers, 5000);
       google.maps.event.addListener(self.map, "center_changed", self.On.centerChanged);
       google.maps.event.addListener(app.map, "click", self.On.mapClick);

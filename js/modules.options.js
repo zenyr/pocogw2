@@ -1,11 +1,15 @@
 AppModules.Options = function (self) {
-  var opt = {};
-  var floatPnl = $('<div id="float" style="z-index:2;background:#fff;padding:2px;font-size:.5em;position:absolute;right:0;top:3em;"><p id="echo"></p></div>');
-  var optPnl = $('<div />', {
-    id: 'optPnl'
-  }).appendTo(floatPnl).append('<ul><li><input type="checkbox" id="optFollow" value="1"> Follow player</li></ul>');
-  $('body').on('change','#float input',self.On.optChanged).append(floatPnl);
-
-
-  return opt;
+  return {
+    init: function () {
+      delete self.Options.init;
+      var floatPnl = $('<div id="float"></div>');
+      var opts = ['<input type="checkbox" id="optFollow" value="1"> Follow player','<select id="optServer"><option value>Server</option></select>'];
+      var optPnl = $('<div />', {
+        id: 'optPnl'
+      }).appendTo(floatPnl)
+        .append('<ul><li>'+opts.join('</li><li>')+'</li></ul>');
+      floatPnl.append('<p id="echo"></p>');
+      $('body').on('change', '#float input,#float select', self.On.optChanged).append(floatPnl);
+    }
+  };
 };
