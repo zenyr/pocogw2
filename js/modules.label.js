@@ -110,8 +110,8 @@ AppModules.Label = function (self) {
     var flags = this.get('flags') || [];
     div.css({
       display: 'block',
-      borderColor: ['transparent', '#fff', '#fc2'][status],
-      opacity: (0.2 + this.get('status') * 0.4)
+      borderColor: ['transparent', '#000', '#fff', '#fc2'][status],
+      opacity: (0.2 + this.get('status') * 0.8/3)
     });
     if (flags[0])
       div.css({
@@ -136,8 +136,8 @@ AppModules.Label = function (self) {
   _PolyEvent.prototype.onAdd = function () {
     var status = this.get('status') || 0;
     var polyOptions = {
-      strokeColor: ['#888', '#fff', '#fc2'][status],
-      strokeOpacity: (0.2 + status * 0.4),
+      strokeColor: ['transparent', '#000', '#fff', '#fc2'][status],
+      strokeOpacity: (0.2 + status * 0.8/3),
       strokeWeight: 3,
       clickable: !1
     };
