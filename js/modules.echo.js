@@ -1,8 +1,8 @@
 AppModules.Echo = function (self) {
   var list = [];
   return function(msg){
-    list.push(msg);
+    list.push((new Date()).toLocaleTimeString()+':'+msg);
     if(list.length>3) list=list.slice(-3);
-    $('#echo').html('<p>'+(new Date()).toLocaleTimeString()+list.join('<p>'));
+    $('#echo').html('<p>'+list.join('<p>'));
   };
 };
