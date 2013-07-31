@@ -30,20 +30,20 @@ AppModules.Draw = function (self) {
             switch (event.location.type) {
             case 'poly':
               polyArray = [];
-              for(var i in event.location.points)
-                polyArray.push(self.Geo.pos2ll(event.location.points[i],mapInd,1));
+              for (var i in event.location.points)
+                polyArray.push(self.Geo.pos2ll(event.location.points[i], mapInd, 1));
               //TODO : Poly events.. :/ 
             case 'sphere':
             case 'cylinder':
               self.Label.add('e', event.name, { // sector-name
                 map: self.map,
                 position: ll,
-                  type:event.location.type,
-                  positions:polyArray,
+                type: event.location.type,
+                positions: polyArray,
                 flags: event.flags,
                 status: skip,
                 label: event.name,
-                desc: event.flags.join(',').replace('group_event','[Group]') + '(' + status + ') ' + event.name,
+                desc: event.flags.join(',').replace('group_event', '[Group]') + '(' + status + ') ' + event.name,
                 radius: radius
               });
               break;
@@ -95,13 +95,13 @@ AppModules.Draw = function (self) {
             _objText[0] = _objText[0].toUpperCase();
             _objText = _objText.join('');
           }
-          self.Label.add('i', itm.name || itm.task_id || Math.random() , {
+          self.Label.add('i', itm.name || itm.task_id || Math.random(), {
             map: self.map,
             position: self.Geo.a2ll(itm.coord),
             icon: _type,
             label: itm.name || (_objText ? _objText + ' ' + itm.level : _type),
             alt: itm.objective || itm.level || '',
-            desc: (itm.objective ? itm.objective : itm.name || _type) + (itm.poi_id?'\nChat code: ' + self.Get.chatCode(4, itm.poi_id):''),
+            desc: (itm.objective ? itm.objective : itm.name || _type) + (itm.poi_id ? '\nChat code: ' + self.Get.chatCode(4, itm.poi_id) : ''),
             max: 7,
             sMin: 6,
             min: 4,

@@ -7,13 +7,10 @@
 	position:absolute;
 	display:none;
 	pointer-events:none;
-	/*border:1px solid black;
-	border-width:1px 0 0 1px;*/
 	white-space: nowrap; color:white;
 }
 .label span,.label small{
-/*	border:1px solid red;*/
-	font-family:menomonia,serif;
+	font-family:menomonia,roboto,serif;
 	position:relative;
 	display:block;
 	left:-50%;
@@ -112,8 +109,8 @@
 	transition: all .2s ease;
 }
 .marker .crot {
-left:-46px;
-top:-43px;
+	left:-46px;
+	top:-43px;
 }
 .marker .prot {
 	left:-14px;
