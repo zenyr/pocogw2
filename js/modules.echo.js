@@ -3,6 +3,6 @@ AppModules.Echo = function (self) {
   return function(msg){
     list.push(msg);
     if(list.length>3) list=list.slice(-3);
-    $('#echo').html('<p>'+list.join('<p>'));
+    $('#echo').html('<p>'+(new Date()).toLocaleTimeString()+list.join('<p>'));
   };
 };
