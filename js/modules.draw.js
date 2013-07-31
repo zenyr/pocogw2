@@ -2,7 +2,7 @@ AppModules.Draw = function (self) {
   return {
     eventMarkers: function (force, data, names) {
       if (!data) {
-        $.when(self.Fetch.zoneEvents(force, self.Player.linker.server, self.Get.mapInd(1)), self.Fetch.eventNames()).done(function (dat1, dat2) {
+        $.when(self.Fetch.zoneEvents(force, self.Player.linker().server, self.Get.mapInd(1)), self.Fetch.eventNames()).done(function (dat1, dat2) {
           self.Draw.eventMarkers(force, dat1, dat2);
         });
       } else {
