@@ -6,7 +6,7 @@ AppModules.Draw = function (self) {
           self.Draw.eventMarkers(force, dat1, dat2);
         });
       } else {
-        self.Label.clear('e');
+        var now = +new Date();
         var mapInd = self.Get.mapInd(1),
           map = self.Maps.load(mapInd);
         if (!map) return console.log('OOPS NO MAP. hence NO EVENT for you');
@@ -35,7 +35,7 @@ AppModules.Draw = function (self) {
               //TODO : Poly events.. :/ 
             case 'sphere':
             case 'cylinder':
-              self.Label.add('e', event.name, { // sector-name
+              self.Label.add('e', uid, { // sector-name
                 map: self.map,
                 position: ll,
                 type: event.location.type,
@@ -44,14 +44,16 @@ AppModules.Draw = function (self) {
                 status: skip,
                 label: event.name,
                 desc: event.flags.join(',').replace('group_event', '[Group]') + '(' + status + ') ' + event.name,
-                radius: radius
+                radius: radius,
+                time:now
               });
               break;
             default:
               console.log('unknown event type:', event)
             }
           }
-        }
+        }        
+        self.Label.clear('e',now);
       }
     },
     mapMarkers: function (map) {

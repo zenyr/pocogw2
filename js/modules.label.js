@@ -31,13 +31,18 @@ AppModules.Label = function (self) {
         lbls[uid] = new(type == 'e' ? (options.type == 'poly' ? _PolyEvent : _Event) : _Label)(options);
       } else {
         delete options.map;
+        if(options.status) //if the label is Events save latest status
+          options.lastStatus = lbls[uid].get('status');  
         lbls[uid].setValues(options);
+        if(lbls[uid].div_)
+          lbls[uid].draw();
       }
       lbls = null;
       return true;
-    }, clear = function (type) {
+    }, clear = function (type,time) {
       var lbls = labels[type] || [];
       for (var i in lbls) {
+        if(time && (lbls[i].get('time')>=time)) continue;
         lbls[i].setMap(null);
         lbls[i] = null;
         delete lbls[i];
@@ -93,7 +98,7 @@ AppModules.Label = function (self) {
   _Event.prototype.onAdd = function () {
     var pane = this.getPanes().overlayMouseTarget;
     pane.appendChild(this.div_);
-    this.div_ = $(this.div_).attr('title', this.get('desc'));
+    this.div_ = $(this.div_);
   };
   _Event.prototype.onRemove = function () {
     this.div_.remove();
@@ -106,13 +111,15 @@ AppModules.Label = function (self) {
     var position = projection.fromLatLngToDivPixel(this.get('position'));
     var div = this.div_;
     var status = this.get('status') || 0;
+    var lastStatus = this.get('lastStatus') || 9;
     var zoom = self.Get.zoom();
     var flags = this.get('flags') || [];
+    var isElevated =  lastStatus < status;
     div.css({
       display: 'block',
       borderColor: ['transparent', '#000', '#fff', '#fc2'][status],
       opacity: (0.2 + this.get('status') * 0.8/3)
-    });
+    }).attr('title', this.get('desc')).toggleClass('event-elevated',isElevated);
     if (flags[0])
       div.css({
         borderColor: '#a33'
@@ -134,28 +141,11 @@ AppModules.Label = function (self) {
   };
   _PolyEvent.prototype = new google.maps.OverlayView;
   _PolyEvent.prototype.onAdd = function () {
-    var status = this.get('status') || 0;
-    var polyOptions = {
-      strokeColor: ['transparent', '#000', '#fff', '#fc2'][status],
-      strokeOpacity: (0.2 + status * 0.8/3),
-      strokeWeight: 3,
-      clickable: !1
-    };
-    polyOptions.fillOpacity = polyOptions.strokeOpacity * 0.2;
-    this.poly = new google.maps.Polygon(polyOptions);
-    var path = this.poly.getPath();
-    for (var i in this.positions) {
-      path.push(this.positions[i]);
-    }
+    this.poly = new google.maps.Polygon();
+
     this.poly.setMap(this.map);
     var div = document.createElement('div');
-    this.div_ = $(div).css({
-      opacity: polyOptions.strokeOpacity
-    }).attr({
-      title: this.get('desc'),
-      'data-type': this.get('_type'),
-      'data-uid': this.get('_uid')
-    }).html(' ').addClass('event-poly-center').appendTo(this.getPanes().overlayMouseTarget);
+    this.div_ = $(div).html(' ').addClass('event-poly-center').appendTo(this.getPanes().overlayMouseTarget);    
   };
   _PolyEvent.prototype.onRemove = function () {
     this.poly.setMap(null);
@@ -167,11 +157,32 @@ AppModules.Label = function (self) {
   };
   _PolyEvent.prototype.draw = function () {
     var projection = this.getProjection();
+    var status = this.get('status') || 0;
+    var lastStatus = this.get('lastStatus') || 9;
+    var isElevated =  lastStatus < status;
+    var polyOptions = {
+      strokeColor: ['transparent', '#000', '#fff', '#fc2'][status],
+      strokeOpacity: (0.2 + status * 0.8/3),
+      strokeWeight: 3,
+      clickable: !1
+    };
+    polyOptions.fillOpacity = polyOptions.strokeOpacity * 0.2;
+    this.poly.setOptions(polyOptions);
+    var path = this.poly.getPath();
+    for (var i in this.positions) {
+      path.push(this.positions[i]);
+    }
+
     var position = projection.fromLatLngToDivPixel(this.get('position'));
     this.div_.css({
-      left: ~~position.x,
-      top: ~~position.y
-    });
+      left: ~~position.x-10,
+      top: ~~position.y-10,    
+      opacity: polyOptions.strokeOpacity
+    }).attr({
+      title: this.get('desc'),
+      'data-type': this.get('_type'),
+      'data-uid': this.get('_uid')
+    }).toggleClass('event-elevated',isElevated);
   };
   return {
     add: add,
