@@ -18,6 +18,21 @@ AppModules.Rect = function (self) {
       };
       return ((p.x >= aRect[0]) && (p.x < aRect[0] + aRect[2]) && (p.y >= aRect[1]) && (p.y < aRect[1] + aRect[3]));
     },
+    distance: function (aRect, pixel) {
+      var p = {
+        x: pixel.x || pixel[0],
+        y: pixel.y || pixel[1]
+      };
+      return {x: Math.max(aRect[0]-p.x , p.x-aRect[0]-aRect[2],0),y: Math.max(aRect[1]-p.y , p.y-aRect[1]-aRect[3],0)}
+    },
+    rDistance:function(aRect,pixel){
+      var d = self.Rect.distance(aRect,pixel);
+      return Math.sqrt(d.x*d.x+d.y*d.y);
+    },
+    minDistance:function(aRect,pixel){
+      var d = self.Rect.distance(aRect,pixel);
+      return Math.max(d.x,d.y);
+    },
     toBounds: function (aRect) {
       self.Rect.normalize(aRect);
       return new google.maps.LatLngBounds(

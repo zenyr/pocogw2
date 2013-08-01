@@ -24,18 +24,25 @@ AppModules.Get = function (self) {
     mapInd: function (force) {
       if (force || !self.Player.linker().mapInd) {
         var c = self.Geo.ll2p(self.map.getCenter()),
-          itm;
+          itm, closest = {}, d;
         for (var scanning in self.Maps.raw) {
-          itm = self.Maps.raw[scanning];
-          if(itm.continent != self.Get.continent()) 
+          itm = self.Maps.load(scanning);
+          if (itm.continent != self.Get.continent())
             continue;
-          if (!itm.isInstance || itm.continent==2) {
+          if (!itm.isInstance || itm.continent == 2) {
             if (self.Rect.contains(itm.cRect, c)) {
               return scanning;
+            } else {
+              d = self.Rect.rDistance(itm.cRect, c);
+              if (!closest.d || closest.d > d) {
+                closest.m = scanning;
+                closest.d = d;
+              }
             }
           }
         }
         itm = null;
+        return closest.m;
       } else return self.Player.linker().mapInd;
       return false;
     },
