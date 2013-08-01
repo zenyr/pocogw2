@@ -13,7 +13,8 @@ AppModules.Player = function (self) {
         y: data.pos[2]
       });
       try {
-        markerSet(data)
+        markerSet(data);
+        self.Options.setServer(data.server);
       } catch (e) {
         interval = 3000;
       }

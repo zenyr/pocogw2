@@ -26,12 +26,12 @@ AppModules.Fetch = function (self) {
       });
     },
     zoneEvents: function (force, server, mapInd) {
-      server = server || self.Player.server || 1021;
+      server = server||self.Get.server();
       mapInd = mapInd || 1;
       self.Echo('fetch.zoneEvents requested as '+server+', '+mapInd);
       return $.Deferred(function ($d) {
         if (!server) {
-          $d.reject('ignoring fetch.zoneEvent');
+          $d.reject('no server selected');
         } else if (!lastZoneEvents || force || (server != lastServer) || (mapInd != lastMapInd) || (new Date() - lastZoneEventsTime > 4e3)) {
           lastZoneEvents = null;
           $.getJSON("https://api.guildwars2.com/v1/events.json?world_id=" + server + "&map_id=" + mapInd).
@@ -71,10 +71,10 @@ AppModules.Fetch = function (self) {
     },
    linker : function(){
       if(self.Options.optFollow){
-        return new $.getJSON('http://localhost:8428/gw2.json?'+(Math.random()+'').slice(2));
+        return new $.getJSON('http://localhost:8428/gw2.json?'+(Math.random()+'').slice(2)).fail(function(){self.Echo('fetch.linker failed: No GW2Linker found.');});
       } else {
-        var $d = $.Deferred();
-        setTimeout($d.reject,0);
+        var $d = $.Deferred()
+        setTimeout($d.reject,0);        
         return $d;
       }
     },

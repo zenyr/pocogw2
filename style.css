@@ -175,4 +175,8 @@ li {
   position:absolute;
   right:1em;
   top:3em;
+	opacity:.9;
+}
+#float select {
+	width:100%;
 }

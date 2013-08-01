@@ -9,6 +9,9 @@ AppModules.Get = function (self) {
     maxZoom: function () {
       return self.Get.continent() == "1" ? 7 : 6;
     },
+    server: function () {
+      return self.Options.optServer || false
+    },
     tileSrc: function (coords, zoom) {
       var mapId = self.map.getMapTypeId();
       if (coords.y < 0 || coords.x < 0 || coords.y >= (1 << zoom) || coords.x >= (1 << zoom)) {

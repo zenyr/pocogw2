@@ -4,6 +4,8 @@ AppModules.Draw = function (self) {
       if (!data) {
         $.when(self.Fetch.zoneEvents(force, self.Player.linker().server, self.Get.mapInd(1)), self.Fetch.eventNames()).done(function (dat1, dat2) {
           self.Draw.eventMarkers(force, dat1, dat2);
+        }).fail(function(a){
+          self.Echo('draw.eventMarkers failed:'+a);
         });
       } else {
         var now = +new Date();
