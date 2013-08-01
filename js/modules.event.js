@@ -10,7 +10,7 @@ AppModules.On = function (self) {
         if (itm) {
           var txt = [];
           txt.push(itm.desc.replace('\n', '<br>'));
-          if (itm.wiki) txt.push('<a href="'+itm.wiki+'">wiki</a>');
+          if (itm.wiki) txt.push('<a href="' + itm.wiki + '">wiki</a>');
           app.popup.setContent(txt.join('<br>'));
           app.popup.setPosition(itm.position);
           app.popup.open(app.map);
@@ -51,6 +51,15 @@ AppModules.On = function (self) {
     mapDragged: function (e) {
       self.Options.lastDrag = +new Date();
     },
+    mapTypeChanged: function (e) {
+      try {
+        self.Echo('maptypeid_changed');
+        self.Draw.worldMarkers();
+      } catch (e) {
+        self.Echo('maptypechanged-Failed.');
+        console.log(e);
+      }
+    },
     init: function () {
       self.Draw.worldMarkers();
       self.Player.poll();
@@ -59,6 +68,7 @@ AppModules.On = function (self) {
       google.maps.event.addListener(self.map, "center_changed", _.debounce(self.On.centerChanged, 200));
       google.maps.event.addListener(app.map, "click", self.On.mapClick);
       google.maps.event.addListener(app.map, "drag", self.On.mapDragged);
+      google.maps.event.addListener(app.map, "maptypeid_changed", self.On.mapTypeChanged);
       delete self.On.init;
     }
   }
