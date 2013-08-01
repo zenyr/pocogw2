@@ -9,5 +9,7 @@ var AppModules = function(target){
         target[mod] = AppModules[mod](target);
       $d.resolve();
     })
+  }).fail(function(e){
+      $d.reject(e);
   });
 }
