@@ -31,12 +31,12 @@
 .hide-small small {
   display:none;
 }
-.label .icon {
+.label .icon ,.event-poly-center{
   cursor:pointer;
   pointer-events:auto;
   background-repeat:no-repeat;
 }
-.label .icon:hover {
+.label .icon:hover ,.event-poly-center:hover{
   margin:-3px;
 }
 .label .icon:hover, .event-area:hover, .event-poly-center:hover {
@@ -93,7 +93,6 @@
   background-image:url(img/icon-jp.png);
 }
 .event-poly-center {
-  cursor:pointer;
   position:absolute;
   width:20px;
   height:20px;
