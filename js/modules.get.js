@@ -27,7 +27,9 @@ AppModules.Get = function (self) {
           itm;
         for (var scanning in self.Maps.raw) {
           itm = self.Maps.raw[scanning];
-          if (!itm.isInstance) {
+          if(itm.continent != self.Get.continent()) 
+            continue;
+          if (!itm.isInstance || itm.continent==2) {
             if (self.Rect.contains(itm.cRect, c)) {
               return scanning;
             }

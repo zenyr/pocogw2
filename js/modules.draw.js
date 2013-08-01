@@ -4,8 +4,8 @@ AppModules.Draw = function (self) {
       if (!data) {
         $.when(self.Fetch.zoneEvents(force, self.Player.linker().server, self.Get.mapInd(1)), self.Fetch.eventNames()).done(function (dat1, dat2) {
           self.Draw.eventMarkers(force, dat1, dat2);
-        }).fail(function(a){
-          self.Echo('draw.eventMarkers failed:'+a);
+        }).fail(function (a) {
+          self.Echo('draw.eventMarkers failed:' + a);
         });
       } else {
         var now = +new Date();
@@ -47,15 +47,15 @@ AppModules.Draw = function (self) {
                 label: event.name,
                 desc: event.flags.join(',').replace('group_event', '[Group]') + '(' + status + ') ' + event.name,
                 radius: radius,
-                time:now
+                time: now
               });
               break;
             default:
               console.log('unknown event type:', event)
             }
           }
-        }        
-        self.Label.clear('e',now);
+        }
+        self.Label.clear('e', now);
       }
     },
     mapMarkers: function (map) {
@@ -65,6 +65,7 @@ AppModules.Draw = function (self) {
         tasks: 'tasks'
       };
       map = map || self.Maps.load(self.Get.mapInd(1));
+      if (!map) return;
       self.Label.clear('s');
       self.Label.clear('i');
       for (var sector in map.sectors) {
@@ -134,6 +135,7 @@ AppModules.Draw = function (self) {
             var cRect = self.Rect.fromArray(map.continent_rect);
             var mRect = self.Rect.fromArray(map.map_rect);
             _.assign(map, {
+              continent: self.Get.continent(),
               cRect: cRect,
               mRect: mRect,
               isInstance: !realMapsData[ind]
