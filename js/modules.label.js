@@ -114,8 +114,15 @@ AppModules.Label = function (self) {
     var lastStatus = this.get('lastStatus') || 9;
     var zoom = self.Get.zoom();
     var flags = this.get('flags') || [];
-    var isElevated =  lastStatus < status;
+    var isElevated =  lastStatus < status && status > 2;
+    var r = this.radius / Math.pow(2, 7 - zoom);
     div.css({
+      borderRadius: r / 2,
+      left: position.x - r / 2,
+      top: position.y - r / 2,
+      width: ~~r,
+      height: ~~r,
+      zIndex: status - 4,
       display: 'block',
       borderColor: ['transparent', '#000', '#fff', '#fc2'][status],
       opacity: (0.2 + this.get('status') * 0.8/3)
@@ -125,15 +132,6 @@ AppModules.Label = function (self) {
         borderColor: '#a33'
       });
     this.v_ = !0;
-    var r = this.radius / Math.pow(2, 7 - zoom);
-    div.css({
-      borderRadius: r / 2,
-      left: position.x - r / 2,
-      top: position.y - r / 2,
-      width: r,
-      height: r,
-      zIndex: status - 4
-    });
   };
   var _PolyEvent = function (opt_options) {
     this.setValues(opt_options);
@@ -159,7 +157,7 @@ AppModules.Label = function (self) {
     var projection = this.getProjection();
     var status = this.get('status') || 0;
     var lastStatus = this.get('lastStatus') || 9;
-    var isElevated =  lastStatus < status;
+    var isElevated =  lastStatus < status && status > 2;
     var polyOptions = {
       strokeColor: ['transparent', '#000', '#fff', '#fc2'][status],
       strokeOpacity: (0.2 + status * 0.8/3),
