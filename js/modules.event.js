@@ -8,7 +8,10 @@ AppModules.On = function (self) {
       } else {
         var itm = app.Label.getFromElement(document.elementFromPoint(e.pixel.x, e.pixel.y));
         if (itm) {
-          app.popup.setContent(itm.desc.replace('\n', '<br>'));
+          var txt = [];
+          txt.push(itm.desc.replace('\n', '<br>'));
+          if (itm.wiki) txt.push('<a href="'+itm.wiki+'">wiki</a>');
+          app.popup.setContent(txt.join('<br>'));
           app.popup.setPosition(itm.position);
           app.popup.open(app.map);
           isPopOpen = !0;
@@ -33,15 +36,19 @@ AppModules.On = function (self) {
     optChanged: function (e) {
       var $e = $(e.target),
         id = $e.attr('id'),
-        val = $e.is(':checked');
-      if($e.is('select')){
+        val = $e.is(':checked'),
+        callbacks = {
+          optServer: self.Draw.eventMarkers
+        };
+      if ($e.is('select')) {
         val = $e.find(':selected').val();
       }
       if (!id) return console.log('Unknown Option.', e);
       console.log('Optchanged-', id, val);
+      if (callbacks[id]) callbacks[id]();
       self.Options[id] = val;
     },
-    mapDragged : function(e){
+    mapDragged: function (e) {
       self.Options.lastDrag = +new Date();
     },
     init: function () {
@@ -49,7 +56,7 @@ AppModules.On = function (self) {
       self.Player.poll();
       self.Options.init();
       setInterval(self.Draw.eventMarkers, 5000);
-      google.maps.event.addListener(self.map, "center_changed", _.debounce(self.On.centerChanged,200));
+      google.maps.event.addListener(self.map, "center_changed", _.debounce(self.On.centerChanged, 200));
       google.maps.event.addListener(app.map, "click", self.On.mapClick);
       google.maps.event.addListener(app.map, "drag", self.On.mapDragged);
       delete self.On.init;
