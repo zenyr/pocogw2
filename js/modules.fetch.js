@@ -32,7 +32,7 @@ AppModules.Fetch = function (self) {
       return $.Deferred(function ($d) {
         if (!server) {
           $d.reject('ignoring fetch.zoneEvent');
-        } else if (!lastZoneEvents || force || (server != lastServer) || (mapInd != lastMapInd) || (new Date() - lastZoneEventsTime > 5e3)) {
+        } else if (!lastZoneEvents || force || (server != lastServer) || (mapInd != lastMapInd) || (new Date() - lastZoneEventsTime > 4e3)) {
           lastZoneEvents = null;
           $.getJSON("https://api.guildwars2.com/v1/events.json?world_id=" + server + "&map_id=" + mapInd).
           done(function (data) {
