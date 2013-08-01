@@ -11,9 +11,10 @@ AppModules.Options = function (self) {
       $s.append(b.join(''));
     });
   };
-  var setOptServer = function (v) {
+  var setOptServer = function (v,ignoreTrigger) {
     if (!$s.find('option[value=' + v + ']')[0]) return !1;
-    $s.val(v).trigger('change');
+    $s.val(v);
+    if(!ignoreTrigger) $s.trigger('change');
     return !0;
   }
   return {

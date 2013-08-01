@@ -14,7 +14,7 @@ AppModules.Player = function (self) {
       });
       try {
         markerSet(data);
-        self.Options.setServer(data.server);
+        self.Options.setServer(data.server,true);
       } catch (e) {
         interval = 3000;
       }
