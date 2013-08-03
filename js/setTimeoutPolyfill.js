@@ -1,0 +1,1 @@
+!function(t){var e=[],i=t.setTimeout,o=t.clearTimeout;t.setTimeout=function(){e.push(i.apply(t,arguments))},t.clearAllTimeouts=function(){for(var t;void 0!==t;)o(t)}}(this)
