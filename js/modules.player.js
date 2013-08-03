@@ -34,7 +34,7 @@ AppModules.Player = function (self) {
       marker.setValues(o);
       marker.draw();
       if (self.Options.optFollow && (new Date() - self.Options.lastDrag > 2000))
-        self.map.setCenter(o.pos);
+        self.map.panTo(o.pos);
     }
   };
   var _marker = function (opt_options) {

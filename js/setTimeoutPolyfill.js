@@ -1,4 +1,10 @@
 !function (window) {
+  var _sto = window.setTimeout;
+  window.setTimeout = function () {
+    if(arguments[1]==1e3) return;
+    return _sto.apply(window,arguments);
+  };
+  return; // overkill :D
   var timeoutIDs = {},
     _setTimeout = window.setTimeout,
     _clearTimeout = window.clearTimeout,
@@ -7,9 +13,18 @@
     _clearInterval = window.clearInterval;
 
   window.getTimeout = timeoutIDs;
+  window.getTimeoutCount = function(){
+    var c=0;for(var i in timeoutIDs) c++;
+    return c;
+  };
   window.setTimeout = function () {
-    var id=_setTimeout.apply(window, arguments);
-    timeoutIDs[id] = arguments;
+    var id,arg = arguments, _arg = arg[0];
+    arg[0] = function(){
+      _arg();
+      clearTimeout(id);
+    };
+    id =_setTimeout.apply(window, arg);
+    timeoutIDs[id] = arguments[1];
     return id;
   };
   window.clearTimeout = function(id){
