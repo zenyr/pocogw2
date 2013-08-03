@@ -14,6 +14,7 @@ AppModules.Options = function (self) {
   var setOptServer = function (v,ignoreTrigger) {
     if (!$s.find('option[value=' + v + ']')[0]) return !1;
     $s.val(v);
+    self.Options.lastDrag = +new Date();
     if(!ignoreTrigger) $s.trigger('change');
     return !0;
   }
