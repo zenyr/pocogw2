@@ -1,7 +1,9 @@
 AppModules.Get = function (self) {
+  var _tileSrcs = {}, _continent = 1;
   return {
-    continent: function () {
-      return self.map.getMapTypeId();
+    continent: function (__val) {
+      if (__val) _continent = __val;
+      return _continent;
     },
     zoom: function () {
       return self.map.getZoom();
@@ -12,14 +14,31 @@ AppModules.Get = function (self) {
     server: function () {
       return self.Options.optServer || false
     },
-    tileSrc: function (coords, zoom) {
-      var mapId = self.map.getMapTypeId();
-      if (coords.y < 0 || coords.x < 0 || coords.y >= (1 << zoom) || coords.x >= (1 << zoom)) {
-        return "http://placehold.it/256/000000/222222";
-      } else if ((mapId == "2") && (zoom > 2) && (coords.y <= (1 << zoom - 2) - 2)) {
-        return "http://placehold.it/256/ffffff/888888";
-      }
-      return "https://tiles.guildwars2.com/" + mapId + "/1/" + zoom + "/" + coords.x + "/" + coords.y + ".jpg";
+    baseLayers: function () {
+      return {
+        "Tyria": self.Get.tileSrc(1),
+        "The Mists": self.Get.tileSrc(2)
+      };
+    },
+    tileSrc: function (continent) {
+      if (!_tileSrcs[continent])
+        _tileSrcs[continent] = L.tileLayer.functional(function (view) {
+          var url = "https://tiles.guildwars2.com/{continent}/1/{z}/{y}/{x}.jpg"
+            .replace('{continent}', continent)
+            .replace('{z}', view.zoom)
+            .replace('{x}', view.tile.row)
+            .replace('{y}', view.tile.column);
+          if (view.tile.column < 0 || view.tile.row < 0 || view.tile.column >= (1 << view.zoom) || view.tile.row >= (1 << view.zoom)) {
+            return "http://placehold.it/256/000000/222222";
+          } else if ((continent == "2") && (view.zoom > 2) && (view.tile.row <= (1 << view.zoom - 2) - 2)) {
+            return "http://placehold.it/256/ffffff/888888";
+          } else if ((continent == "2") && (view.zoom > 6)) {
+            return "http://placehold.it/256/888888/ffffff/";
+          } else return url;
+        }, {
+          attribution: '&copy; Arenanet'
+        });
+      return _tileSrcs[continent];
     },
     mapInd: function (force) {
       if (force || !self.Player.linker().mapInd) {

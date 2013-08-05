@@ -5,6 +5,41 @@
   bottom:0;
   right:0;
 }
+
+.marker,.marker-icon {
+	position:absolute;
+	pointer-events:none;
+	white-space: nowrap;
+	color:white;
+}
+.marker-text {
+	font-size:2em;
+}
+.main-text,.sub-text{
+  font-family:menomonia, serif;
+  position:relative;
+  display:block;
+  left:-50%;
+  text-shadow:-1px -1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, 1px 1px 0 #000;
+  z-index:-1;
+  text-align:center;
+}
+.sub-text {
+	opacity:.9;
+	font-size:.9em;
+	margin:-0.5em 0;
+}
+.marker .main-text{
+	margin-top:-1em;
+}
+.marker-icon .main-text{
+	margin-top:.5em;
+}
+.marker-icon img{
+	pointer-events:auto;
+}
+
+/*
 .label {
   position:absolute;
   display:none;

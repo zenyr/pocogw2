@@ -53,6 +53,9 @@ AppModules.On = function (self) {
     },
     mapTypeChanged: function (e) {
       try {
+        self.Get.continent(e.name=="Tyria"?1:2);
+        console.log('self.map.options.maxZoom',self.Get.maxZoom());
+        self.map.options.maxZoom = self.Get.maxZoom();
         self.Echo('maptypeid_changed');
         self.Draw.worldMarkers();
       } catch (e) {
@@ -61,14 +64,18 @@ AppModules.On = function (self) {
       }
     },
     init: function () {
+      console.log('event.init');
+      self.map.on('baselayerchange', self.On.mapTypeChanged);
+
       self.Draw.worldMarkers();
       self.Player.poll();
       self.Options.init();
       setInterval(self.Draw.eventMarkers, 5000);
-      google.maps.event.addListener(self.map, "center_changed", _.debounce(self.On.centerChanged, 200));
+      
+      /*google.maps.event.addListener(self.map, "center_changed", _.debounce(self.On.centerChanged, 200));
       google.maps.event.addListener(app.map, "click", self.On.mapClick);
       google.maps.event.addListener(app.map, "drag", self.On.mapDragged);
-      google.maps.event.addListener(app.map, "maptypeid_changed", self.On.mapTypeChanged);
+      google.maps.event.addListener(app.map, "maptypeid_changed", self.On.mapTypeChanged);*/
       delete self.On.init;
     }
   }
