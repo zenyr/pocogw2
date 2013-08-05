@@ -2,23 +2,18 @@ AppModules.geo = function (root) {
   var minMax = root.minMax = function (value, min, max) {
     return value < min ? min : value > max ? max : value;
   };
-  var self= {
+  var self = {
     a2ll: function (arr) {
       return self.p2ll(arr);
     },
     ll2p: function (ll) {
-      var point = {},
-        tiles = 1 << root.get.maxZoom(),
-        sin_y = minMax(Math.sin(ll.lat() * (Math.PI / 180)), -0.9999, 0.9999);
-      point.x = 128 + ll.lng() * (256 / 360);
-      point.y = 128 + 0.5 * Math.log((1 + sin_y) / (1 - sin_y)) * -(256 / (2 * Math.PI));
-      return L.point(Math.floor(point.x * tiles), Math.floor(point.y * tiles));
+      return root.map.project(ll, root.tile.maxZoom());
     },
     p2ll: function (point) {
-      var size = (1 << root.get.maxZoom()) * 256,
-        lat = (2 * Math.atan(Math.exp((point.y - size / 2) / -(size / (2 * Math.PI)))) - (Math.PI / 2)) * (180 / Math.PI),
-        lng = (point.x - size / 2) * (360 / size);
-      return L.latLng(lat, lng);
+      var result = root.map.unproject(point, root.tile.maxZoom());
+      if (result.lng > 180) result.lng -= 360;
+      if (result.lng < -180) result.lng += 360;
+      return result;
     },
     pos2ll: function (oXY, mapInd, isEvent) {
       if (oXY[0]) oXY = {

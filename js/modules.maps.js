@@ -4,7 +4,7 @@ AppModules.maps = function (root) {
       return self.load(ind);
     }, load = function (ind) {
       return maps[ind];
-    }, index = function(force){
+    }, index = function (force) {
       if (force || !root.player.linker.mapInd) {
         var c = root.geo.ll2p(root.map.getCenter()),
           itm, closest = {}, d;
@@ -28,11 +28,10 @@ AppModules.maps = function (root) {
         return closest.m;
       } else return root.player.linker.mapInd;
       return false;
-    },self = {
-      current: current;
+    }, self = {
       save: save,
       load: load,
-      getIndex:index,
+      getIndex: index,
       raw: maps
     };
   return self;

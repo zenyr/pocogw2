@@ -12,9 +12,8 @@
 	white-space: nowrap;
 	color:white;
 }
-.marker-text {
-	font-size:2em;
-}
+.marker-text {font-size:2em;}
+.marker .main-text{margin-top:-1em;}
 .main-text,.sub-text{
   font-family:menomonia, serif;
   position:relative;
@@ -25,19 +24,17 @@
   text-align:center;
 }
 .sub-text {
-	opacity:.9;
+	opacity:.7;
 	font-size:.9em;
 	margin:-0.5em 0;
 }
-.marker .main-text{
-	margin-top:-1em;
-}
-.marker-icon .main-text{
-	margin-top:.5em;
-}
-.marker-icon img{
-	pointer-events:auto;
-}
+
+.marker-icon .main-text{margin-top:.5em;}.marker-icon img{pointer-events:auto;}
+.marker-region {color:tan;}
+.marker-map {font-size:1.5em;color:#ff8;} .marker-map .main-text{font-style:italic;}
+.z2 .marker-map,.z6 .marker-map,.z7 .marker-map {display:none;}
+.z2 .marker-icon,.z3 .marker-icon {display:none;}
+.z4 .marker-region,.z5 .marker-region,.z6 .marker-region,.z7 .marker-region {display:none;}
 
 /*
 .label {
