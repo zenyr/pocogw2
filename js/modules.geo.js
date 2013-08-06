@@ -30,6 +30,7 @@ AppModules.geo = function (root) {
         result.y = 1 - result.y;
         result.x = map.cRect[0] + map.cRect[2] * result.x;
         result.y = map.cRect[1] + map.cRect[3] * result.y;
+        result = L.point(result.x,result.y);
         return self.p2ll(result);
       }
       return false;

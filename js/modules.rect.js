@@ -18,6 +18,11 @@ AppModules.rect = function (root) {
       };
       return ((p.x >= aRect[0]) && (p.x < aRect[0] + aRect[2]) && (p.y >= aRect[1]) && (p.y < aRect[1] + aRect[3]));
     },
+    midPoint: function(aRect,rnd){
+      var result= [aRect[0] + aRect[2] / 2, aRect[1] + aRect[3] / 2];
+      if (rnd) _.map(result,Math.round());
+      return result;
+    },
     distance: function (aRect, pixel) {
       var p = {
         x: pixel.x || pixel[0],
@@ -29,7 +34,7 @@ AppModules.rect = function (root) {
       }
     },
     rDistance: function (aRect, pixel) {
-      var d = me.distance(aRect, pixel);
+      var d = self.distance(aRect, pixel);
       return Math.sqrt(d.x * d.x + d.y * d.y);
     },
     minDistance: function (aRect, pixel) {

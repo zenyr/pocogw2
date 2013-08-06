@@ -3,6 +3,20 @@ AppModules.tile = function (root) {
   var $map;
   var _baseLayers = {};
   var _worldLayers = L.layerGroup();
+  var __parseRealMaps = function (aData) {
+    var nData = {}, realMapsAdd = {
+        18: "Divinity's Reach",
+        91: 'The Grove',
+        139: 'Rata Sum',
+        218: 'Black Citadel',
+        326: 'Hoelbrak'
+      };;
+    _(aData).forEach(function (t) {
+      nData[t.id] = t.name;
+    });
+    _.assign(nData, realMapsAdd);
+    return nData;
+  };
   var _getTile = function (continent) {
     var name = ['', 'Tyria', 'The Mists'][continent];
     if (!_baseLayers[name])
@@ -32,16 +46,14 @@ AppModules.tile = function (root) {
         }),
         root.fetch('https://api.guildwars2.com/v1/map_names.json')).done(_fillMaps);
     } else {
+      realMapsData=__parseRealMaps(realMapsData);
       _worldLayers.clearLayers();
       for (var regionInd in data.regions) {
         var region = data.regions[regionInd];
-        _worldLayers.addLayer(L.marker(root.geo.a2ll(region.label_coord), {
-          icon: new L.LabelIcon({
-            textClass: 'marker-region',
+        _worldLayers.addLayer(L.labelMarker(region.label_coord, {            textClass: 'marker-region',
             mainText: region.name,
-            subText: ''
-          })
-        }));
+            subText: regionInd==5?'Maguuma':''          }
+        ));
         for (var ind in region.maps) {
           var map = _.assign({}, region.maps[ind]);
           var cRect = root.rect.fromArray(map.continent_rect);
@@ -53,48 +65,20 @@ AppModules.tile = function (root) {
             isInstance: !realMapsData[ind]
           });
           root.maps.save(ind, map);
-          if (realMapsData[ind]) {
-            _worldLayers.addLayer(L.marker(root.geo.a2ll([cRect[0] + cRect[2] / 2, cRect[1] + cRect[3] / 2]), {
-              icon: new L.LabelIcon({
-                textClass: 'marker-map',
-                mainText: map.name,
-                subText: (map.min_level + map.max_level ? (map.min_level == map.max_level ? map.max_level : map.min_level + '-' + map.max_level) : '')
-              })
+          if (self.continent == 2 || realMapsData[ind]) {
+            _worldLayers.addLayer(L.labelMarker(cRect, {
+              textClass: 'marker-map',
+              mainText: map.name,
+              subText: (map.min_level + map.max_level ? (map.min_level == map.max_level ? map.max_level : map.min_level + '-' + map.max_level) : '')
             }));
-            continue;
-            self.Label.add('m', map.name, {
-              map: self.map,
-              position: self.Geo.p2ll({
-                x: cRect[0] + cRect[2] / 2,
-                y: cRect[1] + cRect[3] / 2
-              }),
-              label: '<i>' + map.name + '</i>',
-              alt: (map.min_level + map.max_level ? (map.min_level == map.max_level ? map.max_level : map.min_level + '-' + map.max_level) : ''),
-              max: 6,
-              min: 3,
-              css: 'color:#ff8;font-size:1.5em'
-            });
           }
         } // each maps end
       } // each region end
     } // !!data end
   };
   var self = {
-    _fillMaps: _fillMaps,
     _TEST: function (e) {
-      console.log('Clicked', e.latlng);
-      for (var i = 0; i < 1; i++) {
-        var l = ',event,group,jp,landmark,skill,target,tasks,unlock,vista,waypoint'.split(','),
-          r = l[~~(Math.random() * l.length)];
-        var marker = L.marker(e.latlng || [Math.random() * 180 - 90, Math.random() * 360 - 180] || e && e.latlng || [0, 0], {
-          icon: new L.LabelIcon({
-            icn: r,
-            mainText: 'hello this is a random',
-            subText: r ? r : 'nope'
-          })
-        });
-        _worldLayers.addLayer(marker);
-      }
+      //console.log('Clicked', e.latlng);
     },
     getBaseLayer: _getTile,
     continent: 1,
@@ -104,25 +88,25 @@ AppModules.tile = function (root) {
     drawPOI: function () {},
     onMoveEnd: function (e) {
       $map.removeClass('z1 z2 z3 z4 z5 z6 z7').addClass('z' + root.map.getZoom());
-      //console.log(root.map.getCenter());
     },
     onBaseLayerChange: function (e) {
-      console.log('FOOOO');
       self.continent = e.name == "Tyria" ? 1 : 2;
       root.map.options.maxZoom = self.continent == 1 ? 7 : 6;
       root.map.setZoom(Math.min(root.map.getZoom(), root.map.options.maxZoom));
       _fillMaps();
+      root.on.trigger('mapChange');
       //TODO: self.Draw.worldMarkers();
     },
     init: function () {
       $map = $('#map');
-      _getTile(1), _getTile(2), _fillMaps();
-      root.baseLayers = _baseLayers;
-      root.layers['Regions'] = _worldLayers.addTo(root.map);
-      root.map.on('baselayerchange', self.onBaseLayerChange);
-      root.map.on('moveend', self.onMoveEnd);
+      _fillMaps();
+      root.layerControl.addBaseLayer(_getTile(1), 'Tyria');
+      root.layerControl.addBaseLayer(_getTile(2), 'The Mists');
+      root.layerControl.addOverlay(_worldLayers.addTo(root.map), 'Regions');
+      root.on('baselayerchange', self.onBaseLayerChange);
+      root.on('moveend', self.onMoveEnd);
       /*DBG*/
-      root.map.on('click', self._TEST);
+      root.on('click', self._TEST);
       /*DBG*/
     }
   };
