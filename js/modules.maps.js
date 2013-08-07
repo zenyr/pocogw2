@@ -97,6 +97,7 @@ AppModules.maps = function (root) {
       init: function () {
         root.on('moveend', onMoveEnd);
         root.on('mapChange', _draw);
+        $map.on('mouseleave','.leaflet-popup-content-wrapper',function(){root.map.closePopup()});
         root.layerControl.addOverlay(_sectorMarkers.addTo(root.map), 'Sectors');
         root.layerControl.addOverlay(_mapMarkers.addTo(root.map), 'POI');
       }

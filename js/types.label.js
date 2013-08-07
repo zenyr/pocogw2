@@ -27,8 +27,13 @@ L.LabelIcon = L.Icon.extend({
       L.DomUtil.create('div', 'main-text', div).innerHTML = this.options['mainText'];
     if (this.options['subText'])
       L.DomUtil.create('div', 'sub-text', div).innerHTML = this.options['subText'];
-    if (this.options['radius']) //TODO
+    if (this.options['radius'])
       this.range = $(L.DomUtil.create('div', 'marker-range', div));
+    if (this.options['poly']) {
+      this.poly = L.polygon(this.options['poly']).on('click',function(e){
+        e.target._owner.fire('click');
+      });
+    }
     return div;
   },
   //you could change this to add a shadow like in the normal marker if you really wanted
@@ -41,16 +46,18 @@ L.labelMarker = function (ll, iOpt, mOpt) {
     if (ll[2]) ll = app.rect.midPoint(ll);
     ll = app.geo.a2ll(ll);
   }
-  var _mOpt = _.assign({}, {
+  var _mOpt = _.assign({
     riseOnHover: true,
-    riseOffset: 5000,
+    riseOffset: 100,
     icon: new L.LabelIcon(iOpt)
   }, mOpt),
     marker = L.marker(ll, _mOpt);
+  marker.bindPopup(null,{closeButton:false});
   marker._update = marker.update;
   marker.update = function () {
     //marker.onPaint
     var inner = this.options.icon;
+    this.setPopupContent((inner.options.subText||inner.options.mainText||''));
     if (inner.range) {
       var z = this._map.getZoom();
       var r = ~~ (inner.options.radius / Math.pow(2, 7 - z));
@@ -63,33 +70,61 @@ L.labelMarker = function (ll, iOpt, mOpt) {
     }
     if (!this.$icon)
       this.$icon = $(this._icon);
+    if(!this._icon) console.log('no icon');
     if (inner.options.stage) {
       var stage = inner.options.stage;
       var lastStatus = inner.options.lastStage || 9;
-      //    var flags = inner.options.flags || [];
+      var isChanged = lastStatus != stage;
       var isElevated = lastStatus < stage && stage > 3;
+      var bColor = ['#000', '#000', '#fff', '#fc2'][stage - 1];
+      if(inner.options.icn =='group'){
+        var cA = bColor.split('');
+        cA[2] = ~~(_.parseInt(cA[2],16)/2);
+        cA[3] = ~~(_.parseInt(cA[3],16)/2);
+        bColor = cA.join('');
+      }
+      this.options.zIndexOffset=1+stage*10;
+
       this.$icon.css({
         opacity: stage / 4
       });
-      inner.range.css({
-        borderWidth: stage - 1,
-        borderColor: ['#000', '#000', '#fff', '#fc2'][stage - 1]
-      }).toggleClass('event-elevated', isElevated);
-        if(isElevated) console.log('WOOT',inner.range[0],inner.options.subText);
+      if(inner.range){
+        inner.range.css({
+          borderWidth: stage - 1,
+          borderColor: bColor
+        }).toggleClass('event-elevated', isElevated);
+      }
+      if(inner.poly) {
+        if(!inner.poly._owner) inner.poly._owner=this;
+        inner.poly.options.weight = stage-1;
+        inner.poly.options.color = bColor;
+        inner.poly.options.fillOpacity = stage / 60;
+        inner.poly.addTo(this._map);
+      }
+      if(isChanged)
+        this.$icon.find('.sub-text').text(inner.options['subText']);
+    } else {
+      this.options.zIndexOffset=this.$icon?1000:1;
     }
     return this._update.apply(this, arguments);
   };
   marker._onRemove = marker.onRemove;
   marker.onRemove = function () {
     //marker.onRemove
+    this.off().unbindPopup();
     var inner = this.options.icon;
     if (inner.range) {
       inner.range.remove();
       delete inner.range;
     }
+    if (inner.poly) {
+      inner.poly.off();
+      delete inner.poly._owner;
+      this._map.removeLayer(inner.poly);
+      delete inner.poly;
+    };
     delete this.$icon;
     return this._onRemove.apply(this, arguments);
   };
-  window.x = marker;
   return marker;
 };

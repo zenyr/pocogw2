@@ -30,6 +30,14 @@
 	border-radius:50%;
 	z-index:-1;
 	pointer-events:auto;
+	box-shadow:0 0 10px #000;
+}
+.marker-event:hover .marker-range {
+	border-style:dashed;
+}
+.marker-event:hover img{
+	transform:scale(1.5);
+    -webkit-transform: scale(1.5);
 }
 .sub-text {
 	opacity:.7;
@@ -46,7 +54,7 @@
 .z4 .marker-icon .main-text,.z4 .marker-icon .sub-text ,.z5 .marker-icon .main-text ,.z5 .marker-icon .sub-text, .z6 .marker-icon .sub-text  {display:none;}
 .z4 .marker-region,.z5 .marker-region,.z6 .marker-region,.z7 .marker-region {display:none;}
 
-@-webkit-keyframes anim {
+@-webkit-keyframes elevated {
   0% {
     transform: scale(1);
     -ms-transform: scale(1);
@@ -62,10 +70,10 @@
 }
 .event-elevated {
   background:rgba(255,0,0,0.3);
-  animation: anim 0.5s ease infinite alternate;
-  -ms-animation: anim 0.5s ease infinite alternate;
-  -moz-animation: anim 0.5s ease infinite alternate;
-  -webkit-animation: anim 0.5s ease infinite alternate;
+  animation: elevated 0.5s ease infinite alternate;
+  -ms-animation: elevated 0.5s ease infinite alternate;
+  -moz-animation: elevated 0.5s ease infinite alternate;
+  -webkit-animation: elevated 0.5s ease infinite alternate;
 }
 /*
 .label {

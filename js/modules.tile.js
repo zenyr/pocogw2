@@ -40,20 +40,17 @@ AppModules.tile = function (root) {
   };
   var _fillMaps = function (data, realMapsData) {
     if (!data) {
-      $.when(root.fetch('https://api.guildwars2.com/v1/map_floor.json?continent_id={c}&floor={f}', {
-          c: self.continent,
-          f: self.continent == 1 ? 2 : 1
-        }),
-        root.fetch('https://api.guildwars2.com/v1/map_names.json')).done(_fillMaps);
+      $.when(root.fetch.map(self.continent), root.fetch('https://api.guildwars2.com/v1/map_names.json')).done(_fillMaps);
     } else {
-      realMapsData=__parseRealMaps(realMapsData);
+      realMapsData = __parseRealMaps(realMapsData);
       _worldLayers.clearLayers();
       for (var regionInd in data.regions) {
         var region = data.regions[regionInd];
-        _worldLayers.addLayer(L.labelMarker(region.label_coord, {            textClass: 'marker-region',
-            mainText: region.name,
-            subText: regionInd==5?'Maguuma':''          }
-        ));
+        _worldLayers.addLayer(L.labelMarker(region.label_coord, {
+          textClass: 'marker-region',
+          mainText: region.name,
+          subText: regionInd == 5 ? 'Maguuma' : ''
+        }));
         for (var ind in region.maps) {
           var map = _.assign({}, region.maps[ind]);
           var cRect = root.rect.fromArray(map.continent_rect);

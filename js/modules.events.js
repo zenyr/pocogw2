@@ -11,7 +11,7 @@ AppModules.events = function (root) {
   };
   var _draw = function (data, detail) {
     if (!data) {
-      if(root.tile.continent == 2 || !root.maps.getIndex(1)) return;
+      if (root.tile.continent == 2 || !root.maps.getIndex(1)) return;
       $.when(root.fetch("https://api.guildwars2.com/v1/events.json?world_id={s}&map_id={m}#", {
           s: 1021 || root.player.linker.server,
           m: root.maps.getIndex(1)
@@ -46,7 +46,6 @@ AppModules.events = function (root) {
           case 'poly':
             for (var i in event.location.points)
               polyArray.push(root.geo.pos2ll(event.location.points[i], mapInd, 1));
-            //TODO : Poly events.. :/ 
           case 'sphere':
           case 'cylinder':
             var opt = {
@@ -57,11 +56,14 @@ AppModules.events = function (root) {
               mainText: '',
               subText: event.flags.join(',').replace('group_event', '[Group]') + '(' + status + ') ' + event.name
             };
+            if (polyArray.length > 0) opt.poly = polyArray;
             if (!_c.marker) {
               _c.marker = L.labelMarker(ll, opt);
               _eventMarkers.addLayer(_c.marker);
             } else {
-              _.assign(_c.marker.options.icon.options,{lastStage:_c.marker.options.icon.options.stage}, opt);
+              _.assign(_c.marker.options.icon.options, {
+                lastStage: _c.marker.options.icon.options.stage
+              }, opt);
               _c.marker.update();
             }
             _c.time = now;
@@ -77,7 +79,7 @@ AppModules.events = function (root) {
   }, self = {
       init: function () {
         root.layerControl.addOverlay(_eventMarkers.addTo(root.map), 'Events');
-        root.on('mapChange',_draw);
+        root.on('mapChange', _draw);
         setInterval(_draw, 5000);
       }
     };
