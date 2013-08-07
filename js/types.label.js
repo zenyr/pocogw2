@@ -30,7 +30,7 @@ L.LabelIcon = L.Icon.extend({
     if (this.options['radius'])
       this.range = $(L.DomUtil.create('div', 'marker-range', div));
     if (this.options['poly']) {
-      this.poly = L.polygon(this.options['poly']).on('click',function(e){
+      this.poly = L.polygon(this.options['poly']).on('click', function (e) {
         e.target._owner.fire('click');
       });
     }
@@ -52,59 +52,61 @@ L.labelMarker = function (ll, iOpt, mOpt) {
     icon: new L.LabelIcon(iOpt)
   }, mOpt),
     marker = L.marker(ll, _mOpt);
-  marker.bindPopup(null,{closeButton:false});
+  marker.bindPopup(null, {
+    closeButton: false
+  });
   marker._update = marker.update;
   marker.update = function () {
     //marker.onPaint
-    var inner = this.options.icon;
-    this.setPopupContent((inner.options.subText||inner.options.mainText||''));
-    if (inner.range) {
-      var z = this._map.getZoom();
-      var r = ~~ (inner.options.radius / Math.pow(2, 7 - z));
-      inner.range.css({
-        width: r,
-        height: r,
-        left: -r / 2,
-        top: -r / 2
-      });
-    }
-    if (!this.$icon)
-      this.$icon = $(this._icon);
-    if(!this._icon) console.log('no icon');
-    if (inner.options.stage) {
-      var stage = inner.options.stage;
-      var lastStatus = inner.options.lastStage || 9;
-      var isChanged = lastStatus != stage;
-      var isElevated = lastStatus < stage && stage > 3;
-      var bColor = ['#000', '#000', '#fff', '#fc2'][stage - 1];
-      if(inner.options.icn =='group'){
-        var cA = bColor.split('');
-        cA[2] = ~~(_.parseInt(cA[2],16)/2);
-        cA[3] = ~~(_.parseInt(cA[3],16)/2);
-        bColor = cA.join('');
-      }
-      this.options.zIndexOffset=1+stage*10;
-
-      this.$icon.css({
-        opacity: stage / 4
-      });
-      if(inner.range){
+    if (this._icon) {
+      var inner = this.options.icon;
+      this.setPopupContent((inner.options.subText || inner.options.mainText || ''));
+      if (inner.range) {
+        var z = this._map.getZoom();
+        var r = ~~ (inner.options.radius / Math.pow(2, 7 - z));
         inner.range.css({
-          borderWidth: stage - 1,
-          borderColor: bColor
-        }).toggleClass('event-elevated', isElevated);
+          width: r,
+          height: r,
+          left: -r / 2,
+          top: -r / 2
+        });
       }
-      if(inner.poly) {
-        if(!inner.poly._owner) inner.poly._owner=this;
-        inner.poly.options.weight = stage-1;
-        inner.poly.options.color = bColor;
-        inner.poly.options.fillOpacity = stage / 60;
-        inner.poly.addTo(this._map);
+      if (!this.$icon)
+        this.$icon = $(this._icon);
+      if (inner.options.stage) {
+        var stage = inner.options.stage;
+        var lastStatus = inner.options.lastStage || 9;
+        var isChanged = lastStatus != stage;
+        var isElevated = lastStatus < stage && stage > 3;
+        var bColor = ['#000', '#000', '#fff', '#fc2'][stage - 1];
+        if (inner.options.icn == 'group') {
+          var cA = bColor.split('');
+          cA[2] = ~~ (_.parseInt(cA[2], 16) / 2);
+          cA[3] = ~~ (_.parseInt(cA[3], 16) / 2);
+          bColor = cA.join('');
+        }
+        this.options.zIndexOffset = 1 + stage * 10;
+        this.$icon.css({
+          opacity: stage / 4
+        });
+        if (inner.range) {
+          inner.range.css({
+            borderWidth: stage - 1,
+            borderColor: bColor
+          }).toggleClass('event-elevated', isElevated);
+        }
+        if (inner.poly) {
+          if (!inner.poly._owner) inner.poly._owner = this;
+          inner.poly.options.weight = stage - 1;
+          inner.poly.options.color = bColor;
+          inner.poly.options.fillOpacity = stage / 60;
+          inner.poly.addTo(this._map);
+        }
+        if (isChanged)
+          this.$icon.find('.sub-text').text(inner.options['subText']);
+      } else {
+        this.options.zIndexOffset = this.$icon ? 1000 : 1;
       }
-      if(isChanged)
-        this.$icon.find('.sub-text').text(inner.options['subText']);
-    } else {
-      this.options.zIndexOffset=this.$icon?1000:1;
     }
     return this._update.apply(this, arguments);
   };

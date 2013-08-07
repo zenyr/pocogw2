@@ -1,15 +1,15 @@
 AppModules.maps = function (root) {
-    var _mapMarkers = L.layerGroup();
-    var _sectorMarkers = L.layerGroup();
+  var _mapMarkers = L.layerGroup();
+  var _sectorMarkers = L.layerGroup();
   var maps = {}, save = function (ind, raw) {
-      if (!maps[ind]) maps[ind] = _.cloneDeep(raw);
-      return self.load(ind);
+      return maps[ind] || (maps[ind] = _.cloneDeep(raw)), raw;
     }, load = function (ind) {
-      if(!ind) ind = index(1);
-      return maps[ind];
+      return ind || (ind = index(1)), maps[ind]
     }, index = function (force) {
-      /*DBG*/if (!root.player) root.player = {};
-      /*DBG*/if (!root.player.linker) root.player.linker = {};
+      /*DBG*/
+      if (!root.player) root.player = {};
+      /*DBG*/
+      if (!root.player.linker) root.player.linker = {};
       if (force || !root.player.linker.mapInd) {
         var c = root.geo.ll2p(root.map.getCenter()),
           itm, closest = {}, d;
@@ -45,11 +45,11 @@ AppModules.maps = function (root) {
       _sectorMarkers.clearLayers();
       for (var sector in map.sectors) {
         sector = map.sectors[sector];
-        _sectorMarkers.addLayer(L.labelMarker(sector.coord,{
-            textClass: 'marker-sector',
-            mainText: sector.name,
-            subText:sector.level || ''
-          }));
+        _sectorMarkers.addLayer(L.labelMarker(sector.coord, {
+          textClass: 'marker-sector',
+          mainText: sector.name,
+          subText: sector.level || ''
+        }));
       }
       for (var type in types)
         for (var ind in map[type]) {
@@ -71,14 +71,14 @@ AppModules.maps = function (root) {
             _objText[0] = _objText[0].toUpperCase();
             _objText = _objText.join('');
           }
-          _mapMarkers.addLayer(L.labelMarker(itm.coord,{
-              icn: _type,
-              mainText: itm.name || (_objText ? _objText + ' ' + itm.level : _type),
-              subText: (itm.objective ? itm.objective :'') + (itm.poi_id ? '\nChat code: ' + chatCode(4, itm.poi_id) : '')
-            }));
+          _mapMarkers.addLayer(L.labelMarker(itm.coord, {
+            icn: _type,
+            mainText: itm.name || (_objText ? _objText + ' ' + itm.level : _type),
+            subText: (itm.objective ? itm.objective : '') + (itm.poi_id ? '\nChat code: ' + chatCode(4, itm.poi_id) : '')
+          }));
         } // itm,type
     }, // draw.mapMarkers
-    chatCode= function (type, id) {
+    chatCode = function (type, id) {
       return "[&" + btoa(String.fromCharCode(type) + String.fromCharCode(id % 256) + String.fromCharCode(Math.floor(id / 256)) + String.fromCharCode(0) + String.fromCharCode(0)) + "]";
     },
     lastMap,
@@ -97,7 +97,9 @@ AppModules.maps = function (root) {
       init: function () {
         root.on('moveend', onMoveEnd);
         root.on('mapChange', _draw);
-        $map.on('mouseleave','.leaflet-popup-content-wrapper',function(){root.map.closePopup()});
+        $map.on('mouseleave', '.leaflet-popup-content-wrapper', function () {
+          root.map.closePopup()
+        });
         root.layerControl.addOverlay(_sectorMarkers.addTo(root.map), 'Sectors');
         root.layerControl.addOverlay(_mapMarkers.addTo(root.map), 'POI');
       }

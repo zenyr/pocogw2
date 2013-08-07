@@ -1,6 +1,19 @@
 AppModules.events = function (root) {
   var _eventMarkers = L.layerGroup();
   var _cache = {};
+  var tmr, toggleDraw = function (e) {
+      if (e.layer == _eventMarkers) {
+        ({
+          overlayremove: function () {
+            if (tmr) clearInterval(tmr);
+          },
+          overlayadd: function () {
+            if (!tmr) tmr = setInterval(_draw,5e3);
+            _draw();
+          }
+        }[e.type])();
+      }
+    };
   var _clearCache = function (now) {
     for (var i in _cache) {
       if (!now || _cache[i].time != now) {
@@ -78,9 +91,11 @@ AppModules.events = function (root) {
     }
   }, self = {
       init: function () {
+        root.on('overlayadd', toggleDraw);
         root.layerControl.addOverlay(_eventMarkers.addTo(root.map), 'Events');
+        root.on('overlayremove', toggleDraw);
         root.on('mapChange', _draw);
-        setInterval(_draw, 5000);
+        tmr = setInterval(_draw, 5000);
       }
     };
   return self;
