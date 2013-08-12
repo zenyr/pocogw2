@@ -6,6 +6,7 @@ AppModules.events = function (root) {
         ({
           overlayremove: function () {
             if (tmr) clearInterval(tmr);
+            tmr = !1;
           },
           overlayadd: function () {
             if (!tmr) tmr = setInterval(_draw, 5e3);
