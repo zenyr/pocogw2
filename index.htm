@@ -13,7 +13,6 @@
  <!--[if lte IE 8]>
      <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
  <![endif]-->
-	<script>var google={maps:{}};</script>
   <link rel="stylesheet" href="style.css" type="text/css" />
   <script src="js/setTimeoutPolyfill.js"></script>
   <script src="//cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
@@ -31,11 +30,13 @@
   <script src="js/modules.maps.js" type="text/javascript"> </script>
   <script src="js/modules.events.js" type="text/javascript"> </script>
   <script src="js/modules.fetch.js" type="text/javascript"> </script>
+  <script src="js/modules.player.js" type="text/javascript"> </script>
   
 </script>
 </head>
 
 <body>
-	Loading... If this takes too long, try refreshing a page.
+	<div id="menu"></div>
+	<div id="map">Loading... If this takes too long, try refreshing a page.</div>
 </body>
 </html>

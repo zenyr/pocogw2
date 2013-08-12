@@ -40,8 +40,8 @@ AppModules.fetch = function (root) {
   fetcher.clearCache = clearCache;
   fetcher.map = function (continent) {
     return $.Deferred(function ($d) {
-      if (!localStorage || !localStorage.floorCache) {
-        fetcher('https://api.guildwars2.com/v1/continents.json').done(function (d) {
+      fetcher('https://api.guildwars2.com/v1/continents.json').done(function (d) {
+        if (!localStorage || !localStorage.getItem('floorCache' + continent)) {
           var fs = d.continents[continent].floors.join(',').split(',');
           var ct = d.continents[continent].name;
           var fl = fs.length;
@@ -57,23 +57,27 @@ AppModules.fetch = function (root) {
               f: f
             }).done(function (d) {
               if (!d.regions) $.reject('Invalid map_floor data');
-              for (var m in d.regions.maps)
-                d.regions.maps[m].floor = f;
+              for (var r in d.regions )
+              for (var m in d.regions[r].maps) {
+                if(typeof d.regions[r].maps[m].floor != 'object') d.regions[r].maps[m].floor= [];
+                d.regions[r].maps[m].floor.push(f);
+                console.log(d.regions[r].maps[m]);
+              }
               $.extend(true, o, d);
               if (fs.length > 0) {
                 run();
               } else {
                 $d.resolve(o);
-                if (localStorage) localStorage.setItem('floorCache', JSON.stringify(o));
+                if (localStorage) localStorage.setItem('floorCache' + continent, /**/ LZString.compress /**/ (JSON.stringify(o)));
                 root.map.closePopup(p);
               }
             });
           };
           run();
-        });
-      } else {
-        $d.resolve(JSON.parse(localStorage.getItem('floorCache')));
-      }
+        } else {
+          $d.resolve(JSON.parse( /**/ LZString.decompress /**/ (localStorage.getItem('floorCache' + continent))));
+        }
+      });
     });
   };
   return fetcher;

@@ -4,19 +4,19 @@ L.TileLayer.Functional = L.TileLayer.extend({
     this._tileFunction = tileFunction;
     L.Util.setOptions(this, options);
   },
-  getTileUrl: function (tilePoint) {
+  getTileUrl: function (tile,tilePoint) {
     // Note: bbox code untested; pulled from TileLayer.WMS
     var map = this._map,
-      crs = map.options.crs,
       tileSize = this.options.tileSize,
-      zoom = this._map.getZoom(),
-      nwPoint = tilePoint.multiplyBy(tileSize),
-      sePoint = nwPoint.add(new L.Point(tileSize, tileSize)),
-      nw = crs.project(map.unproject(nwPoint, zoom)),
-      se = crs.project(map.unproject(sePoint, zoom)),
-      bbox = [nw.x, se.y, se.x, nw.y].join(','),
+      zoom = this._map.getZoom(),      
+      nw = tilePoint.multiplyBy(tileSize),
+      se = nw.add(L.point(tileSize, tileSize)),
+      se = map.unproject(se, zoom),
+      nw = map.unproject(nw, zoom),
+      bnd = L.latLngBounds([nw,se]),
       view = {
-        bbox: bbox,
+        bounds: bnd,
+        bbox: bnd.toBBoxString(),
         width: tileSize,
         height: tileSize,
         zoom: zoom,
@@ -29,7 +29,7 @@ L.TileLayer.Functional = L.TileLayer.extend({
     return this._tileFunction(view);
   },
   _loadTile: function (tile, tilePoint) {
-    var tileUrl = this.getTileUrl(tilePoint);
+    var tileUrl = this.getTileUrl(tile,tilePoint);
     tile._layer = this;
     tile.onload = this._tileOnLoad;
     tile.onerror = this._tileOnError;

@@ -5,10 +5,8 @@ AppModules.maps = function (root) {
       return maps[ind] || (maps[ind] = _.cloneDeep(raw)), raw;
     }, load = function (ind) {
       return ind || (ind = index(1)), maps[ind]
-    }, index = function (force) {
-      /*DBG*/
-      if (!root.player) root.player = {};
-      /*DBG*/
+    }, index = function (force,asArray) {
+      var a = [];
       if (!root.player.linker) root.player.linker = {};
       if (force || !root.player.linker.mapInd) {
         var c = root.geo.ll2p(root.map.getCenter()),
@@ -17,9 +15,11 @@ AppModules.maps = function (root) {
           itm = maps[scanning];
           if (itm.continent != root.tile.continent)
             continue;
-          if (!itm.isInstance || itm.continent == 2) {
+          if (asArray || !itm.isInstance || itm.continent == 2 || scanning == root.player.linker.mapInd) {
             if (root.rect.contains(itm.cRect, c)) {
-              return scanning;
+              if(asArray){
+                a.push(scanning);
+              } else return scanning;
             } else {
               d = root.rect.rDistance(itm.cRect, c);
               if (!closest.d || closest.d > d) {
@@ -30,7 +30,7 @@ AppModules.maps = function (root) {
           }
         }
         itm = null;
-        return closest.m;
+        return asArray?a:closest.m;
       } else return root.player.linker.mapInd;
       return false;
     }, _draw = function (map) {
@@ -39,7 +39,7 @@ AppModules.maps = function (root) {
         points_of_interest: 'poi',
         tasks: 'tasks'
       };
-      map = map || root.maps.load(index(1));
+      map = map || root.maps.load(index(root.tile.moving));
       if (!map) return console.log('maps.draw: !map');
       _mapMarkers.clearLayers();
       _sectorMarkers.clearLayers();
@@ -83,7 +83,7 @@ AppModules.maps = function (root) {
     },
     lastMap,
     onMoveEnd = function (e) {
-      var cMap = index(1);
+      var cMap = index(root.tile.moving);
       if (lastMap != cMap) {
         lastMap = cMap;
         root.on.trigger('mapChange');
@@ -93,11 +93,14 @@ AppModules.maps = function (root) {
       save: save,
       load: load,
       getIndex: index,
+      chatCode:chatCode,
       raw: maps,
       init: function () {
+        root.on('mapChange',function(){var m=load(index());if(m) document.title = m.name+':F'+m.default_floor;});
         root.on('moveend', onMoveEnd);
         root.on('mapChange', _draw);
-        $map.on('mouseleave', '.leaflet-popup-content-wrapper', function () {
+        root.$map.on('mouseleave', '.leaflet-popup-content-wrapper', function () {
+          if(index())
           root.map.closePopup()
         });
         root.layerControl.addOverlay(_sectorMarkers.addTo(root.map), 'Sectors');

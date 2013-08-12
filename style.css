@@ -1,3 +1,10 @@
+#menu {
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:0;
+}
 #map {
   position:absolute;
   left:0;
@@ -5,7 +12,28 @@
   bottom:0;
   right:0;
 }
-
+.marker-player {
+	pointer-events:none;
+}
+#crot,#prot{
+  position:absolute;
+  -moz-transition: all .2s ease;
+  -webkit-transition: all .2s ease;
+  -o-transition: all .2s ease;
+  transition: all .2s ease;
+}
+#crot {
+	width:93px;
+	height:86px;
+	background:url('img/icon-crot.png') no-repeat;
+}
+#prot {
+	width:29px;
+	height:20px;
+	left:32px;
+	top:33px;
+	background:url('img/icon-prot.png') no-repeat;
+}
 .marker,.marker-icon {
 	position:absolute;
 	pointer-events:none;
@@ -35,6 +63,12 @@
 .marker-event:hover .marker-range {
 	border-style:dashed;
 }
+.marker-event img {
+  -moz-transition: all .2s ease;
+  -webkit-transition: all .2s ease;
+  -o-transition: all .2s ease;
+  transition: all .2s ease;
+}
 .marker-event:hover img{
 	transform:scale(1.5);
     -webkit-transform: scale(1.5);
@@ -48,7 +82,7 @@
 .marker-region {color:tan;font-style:italic;}
 .marker-sector {font-size:1.1em;color:silver;} .marker-sector .main-text{font-style:italic;}
 .marker-map {font-size:1.5em;color:#ff8;} .marker-map .main-text{font-style:italic;}
-.z2 .marker-map,.z5 .marker-map,.z6 .marker-map,.z7 .marker-map {display:none;}
+.z2 .marker-map/*,.z5 .marker-map,.z6 .marker-map,.z7 .marker-map */{display:none;}
 .z2 .marker-sector,.z3 .marker-sector ,.z4 .marker-sector {display:none;}
 .z2 .marker-icon,.z3 .marker-icon {display:none;}
 .z4 .marker-icon .main-text,.z4 .marker-icon .sub-text ,.z5 .marker-icon .main-text ,.z5 .marker-icon .sub-text, .z6 .marker-icon .sub-text  {display:none;}

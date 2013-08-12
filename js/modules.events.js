@@ -8,7 +8,7 @@ AppModules.events = function (root) {
             if (tmr) clearInterval(tmr);
           },
           overlayadd: function () {
-            if (!tmr) tmr = setInterval(_draw,5e3);
+            if (!tmr) tmr = setInterval(_draw, 5e3);
             _draw();
           }
         }[e.type])();
@@ -22,19 +22,25 @@ AppModules.events = function (root) {
       }
     }
   };
+  var expectedInd;
   var _draw = function (data, detail) {
     if (!data) {
-      if (root.tile.continent == 2 || !root.maps.getIndex(1)) return;
+      var expectedInd = root.maps.getIndex(root.tile.moving);
+      var server = root.player.linker.server || 1021;
+      self._expectedInd = expectedInd;
+      if (root.tile.continent == 2 || !expectedInd) return;
+      if(server > 3000) return;
       $.when(root.fetch("https://api.guildwars2.com/v1/events.json?world_id={s}&map_id={m}#", {
-          s: 1021 || root.player.linker.server,
-          m: root.maps.getIndex(1)
+          s: server,
+          m: expectedInd
         }),
         root.fetch('https://api.guildwars2.com/v1/event_details.json')).done(_draw);
     } else {
       detail = detail.events;
       var now = +new Date();
-      var mapInd = root.maps.getIndex(),
+      var mapInd = root.maps.getIndex(root.tile.moving),
         map = root.maps.load(mapInd);
+      if (self._expectedInd != mapInd) return console.log('event.draw: mapInd changed while fetching. Ignoring data');
       if (!map) return console.log('OOPS NO MAP. hence NO EVENT for you');
       for (var idx in data.events) {
         var uid = data.events[idx].event_id,

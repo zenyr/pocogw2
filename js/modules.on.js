@@ -1,14 +1,18 @@
 AppModules.on = function (root) {
   var evt = {};
-  var main = function (when, cbk) {
-    var a = evt[when] || [];
-    if (!evt[when]) {
-      root.map.on(when, function (e) {
-        main.trigger(when, e)
-      });
+  var main = function (whens, cbk) {
+    whens = whens instanceof Array?[whens]:whens.split(',');
+    for (var when in whens){
+      when = whens[when];
+      var a = evt[when] || [];
+      if (!evt[when]) {
+        root.map.on(when, function (e) {
+          main.trigger(when, e)
+        });
+      }
+      a.push(cbk);
+      evt[when] = a;
     }
-    a.push(cbk);
-    evt[when] = a;
   };
   main.trigger = function (when, e) {
     var a = evt[when] || [];

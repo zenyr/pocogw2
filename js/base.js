@@ -9,15 +9,13 @@ $(function () {
       if (!self.rect) return console.log('Err:Modules not initialized');
       delete self.init;
       self.popup = {}; //{TODO} new google.maps.InfoWindow();
-      $map = $('<div/>', {
-        id: 'map'
-      }).appendTo('body').on('click','.marker-icon',function(e){
-        console.log('MarkerClick',$(e.target).parent());
+      self.$map = $('#map').on('click','.marker-icon',function(e){
+        self.on.trigger('markerClick',$(e.target).parent());
       });
       self.map = L.map('map', {
         center: new L.LatLng(0, 0),
         zoom: 3,
-        minZoom: 2,
+        minZoom: 0,
         maxZoom: 7,
         zoomControl: false,
         layers: [self.tile.getBaseLayer(1)]
@@ -26,6 +24,9 @@ $(function () {
       for (var mod in self)
         if (_.isObject(self[mod]) && _.isFunction(self[mod].init))
           console.log('firing', mod, 'init'), self[mod].init(), delete self[mod].init;
+    };
+    self.refresh = function(){
+      return self.map._resetView(self.map.getCenter(), self.map.getZoom(), true);
     };
   };
   var app = window.app = new App;

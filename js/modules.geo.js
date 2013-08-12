@@ -20,7 +20,7 @@ AppModules.geo = function (root) {
         x: oXY[0],
         y: oXY[1]
       };
-      var map = mapInd || root.get.mapInd();
+      var map = mapInd || root.maps.getIndex();
       var inch = !isEvent ? 39.3700787 : 1;
       map = map ? root.maps.load(map) : false;
       var result = {};
