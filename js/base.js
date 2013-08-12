@@ -1,5 +1,5 @@
 $(function () {
-  if (localStorage && !localStorage.ll) {
+  if ((location.host!='zenyr.github.io') && localStorage && !localStorage.ll) {
     localStorage.ll = !0;
     if (confirm('this thing is under heavy reconstruction. please use zenyr.github.io to use "working" one. this message is shown only once.')) location.href = '//zenyr.github.io';
   }
