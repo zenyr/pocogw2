@@ -18,7 +18,8 @@ AppModules.events = function (root) {
   var _clearCache = function (now) {
     for (var i in _cache) {
       if (!now || _cache[i].time != now) {
-        _eventMarkers.removeLayer(_cache[i].marker);
+        if(!!cache[i] && _cache[i]["_leaflet_id"])
+          _eventMarkers.removeLayer(_cache[i].marker);
         delete _cache[i];
       }
     }
